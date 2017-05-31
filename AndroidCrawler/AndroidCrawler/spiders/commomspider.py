@@ -7,8 +7,14 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 class CommonSpider(Spider):
-    name = 'commonspider'
+    """
 
-    def __init__(self, name, table_name, *args, **kwargs):
-        super(CommonSpider, self).__init__(*args, **kwargs)
-        
+    """
+
+    table_name = None
+    market_name = None
+
+    def __init__(self, spider_name, market_name, table_name, *a, **kw):
+        super(CommonSpider, self).__init__(*a, **kw)
+
+
