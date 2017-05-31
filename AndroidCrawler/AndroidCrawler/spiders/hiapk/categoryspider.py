@@ -5,10 +5,13 @@ import scrapy
 from w3lib.url import safe_url_string
 from six.moves.urllib.parse import urljoin
 
+
 from AndroidCrawler.items import HiapkItem
 
 reload(sys)
 sys.setdefaultencoding('utf8')
+
+
 class CategorySpider(scrapy.Spider):
     """hiapk category spider, crawl apks by category"""
 

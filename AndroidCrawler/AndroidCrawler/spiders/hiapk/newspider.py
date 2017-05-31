@@ -9,6 +9,8 @@ from AndroidCrawler.items import HiapkItem
 
 reload(sys)
 sys.setdefaultencoding('utf8')
+
+
 class NewSpider(scrapy.Spider):
     """hiapk new spider, crawl new apks"""
 
