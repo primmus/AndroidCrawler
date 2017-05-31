@@ -10,7 +10,7 @@ from AndroidCrawler.items import HiapkItem
 reload(sys)
 sys.setdefaultencoding('utf8')
 class CategorySpider(scrapy.Spider):
-    """hiapk category spider, crawl all apks"""
+    """hiapk category spider, crawl apks by category"""
 
     name = 'hiapk.categoryspider'
     allowed_domains = ['hiapk.com']
@@ -37,8 +37,9 @@ class CategorySpider(scrapy.Spider):
         referers = response.xpath('//a[re:match(@href, "appdown/.*")]/@href').extract()
         if referers is not None:
             for referer in set(referers):
-                yield response.follow(url=referer, callback=self.parse_item, method='HEAD',
-                                dont_filter=True, meta={'dont_redirect': True})
+                yield response.follow(url=referer, callback=self.parse_item, method='HEAD', dont_filter=True,
+                                      meta={'dont_redirect': True, 'dont_obey_robotstxt': True,
+                                            'handle_httpstatus_list': (301, 302, 303, 307)})
 
         follows = response.xpath('//a[re:match(@href, "(apps|games).*\?.*")]/@href').extract()
         if follows is not None:
@@ -63,6 +64,7 @@ class CategorySpider(scrapy.Spider):
             item['spider_name'] = self.name
             item['package_name'] = package_name
             item['version_code'] = version_code
+            item['download_url'] = download_url
             return item
         except:
             return None
