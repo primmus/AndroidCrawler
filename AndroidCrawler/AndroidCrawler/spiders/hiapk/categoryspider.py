@@ -1,12 +1,17 @@
 # coding = utf-8
 
+import os
+import logging
 import sys
+from logging.handlers import RotatingFileHandler
+
 import scrapy
-from w3lib.url import safe_url_string
-from six.moves.urllib.parse import urljoin
-
-
 from AndroidCrawler.items import HiapkItem
+from six.moves.urllib.parse import urljoin
+from w3lib.url import safe_url_string
+
+from AndroidCrawler.conf import config
+
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -29,6 +34,19 @@ class CategorySpider(scrapy.Spider):
     def __init__(self, *args, **kwargs):
         super(CategorySpider, self).__init__(*args, **kwargs)
         self.start_urls = ['http://apk.hiapk.com/{0}'.format(category) for category in self.categorys]
+        logger = logging.getLogger(self.name)
+        self.__init_logger(logger)
+
+    def __init_logger(self, logger):
+        log_dir = config.LOG_DIR + 'hiapk/'
+        log_file = log_dir + self.name + '.log'
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+        log_hander = RotatingFileHandler(log_file, maxBytes=config.LOG_FILE_SIZE,
+                                         backupCount=config.LOG_FILE_BACKUP_COUNT)
+        log_hander.setLevel(config.LOG_LEVER)
+        log_hander.setFormatter(config.LOG_FORMAT)
+        logger.addHandler(log_hander)
 
     def start_requests(self):
         for url in self.start_urls:
@@ -71,4 +89,3 @@ class CategorySpider(scrapy.Spider):
             return item
         except:
             return None
-

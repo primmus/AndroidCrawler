@@ -1,11 +1,16 @@
 # coding = utf-8
 
+import os
+import logging
 import sys
-import scrapy
-from w3lib.url import safe_url_string
-from six.moves.urllib.parse import urljoin
+from logging.handlers import RotatingFileHandler
 
+import scrapy
 from AndroidCrawler.items import HiapkItem
+from six.moves.urllib.parse import urljoin
+from w3lib.url import safe_url_string
+
+from AndroidCrawler.conf import config
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -28,13 +33,26 @@ class NewSpider(scrapy.Spider):
     def __init__(self, *args, **kwargs):
         super(NewSpider, self).__init__(*args, **kwargs)
         self.start_urls = ['http://apk.hiapk.com/{0}?sort=9&pi=1'.format(category) for category in self.categorys]
+        logger = logging.getLogger(self.name)
+        self.__init_logger(logger)
+
+    def __init_logger(self, logger):
+        log_dir = config.LOG_DIR + 'hiapk/'
+        log_file = log_dir + self.name + '.log'
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+        log_hander = RotatingFileHandler(log_file, maxBytes=config.LOG_FILE_SIZE,
+                                         backupCount=config.LOG_FILE_BACKUP_COUNT)
+        log_hander.setLevel(config.LOG_LEVER)
+        log_hander.setFormatter(config.LOG_FORMAT)
+        logger.addHandler(log_hander)
 
     def start_requests(self):
         for url in self.start_urls:
             yield scrapy.Request(url=url, callback=self.parse, dont_filter=True)
 
     def parse(self, response):
-        self.logger.info('current crawl url: {0}'.format(response.url))
+        self.logger.info('current parse url: {0}'.format(response.url))
 
         referers = response.xpath('//a[re:match(@href, "appdown/.*")]/@href').extract()
         if referers is not None:

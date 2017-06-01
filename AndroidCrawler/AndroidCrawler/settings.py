@@ -97,12 +97,12 @@ DOWNLOAD_TIMEOUT = 60
 # The maximum response size (in bytes) that downloader will download. Default: 1073741824 (1024MB) disable it set to 0.
 # DOWNLOAD_MAXSIZE = 1073741824
 
-LOG_ENABLED = True
-LOG_ENCODING = 'utf-8'
-LOG_FILE = 'scrapy.log'
-LOG_FORMAT = '%(asctime)s [%(name)s] %(levelname)s: %(message)s'
-LOG_DATEFORMAT = '%Y-%m-%d %H:%M:%S'
-LOG_LEVEL = 'DEBUG'
-LOG_STDOUT = True
+# LOG_ENABLED = True
+# LOG_ENCODING = 'utf-8'
+# LOG_FILE = 'scrapy.log'
+# LOG_FORMAT = '%(asctime)s [%(name)s] %(levelname)s: %(message)s'
+# LOG_DATEFORMAT = '%Y-%m-%d %H:%M:%S'
+# LOG_LEVEL = 'DEBUG'
+# LOG_STDOUT = True
 
 # MEMDEBUG_ENABLED = True
