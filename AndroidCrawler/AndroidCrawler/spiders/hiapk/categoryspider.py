@@ -38,14 +38,15 @@ class CategorySpider(scrapy.Spider):
         self.__init_logger(logger)
 
     def __init_logger(self, logger):
-        log_dir = config.LOG_DIR + 'hiapk/'
+        LOG_CONFIG = config.LOG_CONFIG
+        log_dir = LOG_CONFIG.get('LOG_DIR', 'log/') + 'hiapk/'
         log_file = log_dir + self.name + '.log'
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
-        log_hander = RotatingFileHandler(log_file, maxBytes=config.LOG_FILE_SIZE,
-                                         backupCount=config.LOG_FILE_BACKUP_COUNT)
-        log_hander.setLevel(config.LOG_LEVER)
-        log_hander.setFormatter(config.LOG_FORMAT)
+        log_hander = RotatingFileHandler(log_file, maxBytes=LOG_CONFIG.get('LOG_FILE_SIZE', 10*1024*1024),
+                                         backupCount=LOG_CONFIG.get('LOG_FILE_BACKUP_COUNT', 3))
+        log_hander.setLevel(LOG_CONFIG.get('LOG_LEVER', logging.DEBUG))
+        log_hander.setFormatter(LOG_CONFIG.get('LOG_FORMAT'))
         logger.addHandler(log_hander)
 
     def start_requests(self):
