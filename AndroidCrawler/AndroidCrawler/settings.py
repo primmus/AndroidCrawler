@@ -37,7 +37,7 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 8
 COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
-#TELNETCONSOLE_ENABLED = False
+TELNETCONSOLE_ENABLED = True
 
 # Override the default request headers:
 DEFAULT_REQUEST_HEADERS = {
@@ -60,9 +60,10 @@ DEFAULT_REQUEST_HEADERS = {
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-#}
+EXTENSIONS = {
+    # 'scrapy.extensions.telnet.TelnetConsole': None,
+    'scrapy_jsonrpc.webservice.WebService': 500,
+}
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
@@ -72,14 +73,14 @@ DEFAULT_REQUEST_HEADERS = {
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
-#AUTOTHROTTLE_ENABLED = True
+AUTOTHROTTLE_ENABLED = True
 # The initial download delay
-#AUTOTHROTTLE_START_DELAY = 5
+AUTOTHROTTLE_START_DELAY = 5
 # The maximum download delay to be set in case of high latencies
-#AUTOTHROTTLE_MAX_DELAY = 60
+AUTOTHROTTLE_MAX_DELAY = 60
 # The average number of requests Scrapy should be sending in parallel to
 # each remote server
-#AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
+AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
 # Enable showing throttling stats for every response received:
 #AUTOTHROTTLE_DEBUG = False
 
@@ -106,3 +107,19 @@ DOWNLOAD_TIMEOUT = 60
 # LOG_STDOUT = True
 
 # MEMDEBUG_ENABLED = True
+
+# A boolean which specifies if the web service will be enabled (provided its extension is also enabled).
+# Default: False
+JSONRPC_ENABLED = True
+# A file to use for logging HTTP requests made to the web service. If unset web the log is sent to standard scrapy log.
+# Default: None
+JSONRPC_LOGFILE = 'webservice.log'
+# The port range to use for the web service. If set to None or 0, a dynamically assigned port is used.
+# Default: [6080, 7030]
+JSONRPC_PORT = [6080, 7030]
+# The interface the web service should listen on.
+# Default: '127.0.0.1'
+JSONRPC_HOST = '127.0.0.1'
+
+
+
