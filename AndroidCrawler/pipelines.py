@@ -6,6 +6,10 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 
-class AndroidcrawlerPipeline(object):
+class HiApkPipeline(object):
+    """check item if exists in db"""
     def process_item(self, item, spider):
+
+
+
         return item

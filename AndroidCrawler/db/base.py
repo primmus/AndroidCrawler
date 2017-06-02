@@ -5,7 +5,7 @@ from sqlalchemy import Column, VARCHAR, TEXT, INTEGER, BINARY, TIMESTAMP, SMALLI
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 
-from AndroidCrawler.AndroidCrawler.conf.config import DB_CONFIG
+from AndroidCrawler.conf.config import DB_CONFIG
 
 Base = declarative_base()
 engine = create_engine(DB_CONFIG['DB_CONNECT_STRING'], echo=True)

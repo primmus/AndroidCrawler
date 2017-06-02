@@ -1,6 +1,9 @@
 # coding: utf-8
 
 import logging
+from AndroidCrawler.db.hiapk import SqlHelper as HiApkSql
+from AndroidCrawler.spiders.hiapk import CategorySpider as HiApkCategorySpider, NewSpider as HiApkNewSpider
+
 
 LOG_CONFIG = {
     'LOG_DIR': 'log/',
@@ -17,10 +20,17 @@ DB_CONFIG = {
 
 Market_CONFIG = {
     'Market_Hiapk': {
-        'db_name': 'Market_Hiapk',
+        'table_name': 'Market_Hiapk',
+        'sql_helper': HiApkSql,
+        'spiders': {
+            HiApkNewSpider,
+            HiApkCategorySpider
+        }
     },
     'Market_360': {
-        'db_name': 'Market_360',
+        'table_name': 'Market_360',
+        'sql_helper': None,
+        'spiders': None
     }
 }
 

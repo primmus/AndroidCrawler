@@ -59,7 +59,8 @@ class CategorySpider(scrapy.Spider):
         referers = response.xpath('//a[re:match(@href, "appdown/.*")]/@href').extract()
         if referers is not None:
             for referer in set(referers):
-                yield response.follow(url=referer, callback=self.parse_item, method='HEAD', dont_filter=True,
+                yield response.follow(url=referer, callback=self.parse_item, method='HEAD',
+                                      dont_filter=True, priority=1,
                                       meta={'dont_redirect': True, 'dont_obey_robotstxt': True,
                                             'handle_httpstatus_list': (301, 302, 303, 307)})
 

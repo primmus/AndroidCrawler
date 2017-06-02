@@ -1,18 +1,18 @@
 # coding: utf-8
 
 import datetime
-
 from sqlalchemy import Column, VARCHAR, INTEGER, BINARY, TIMESTAMP, BIGINT
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 
-from AndroidCrawler.AndroidCrawler.db.base import Base
-from AndroidCrawler.AndroidCrawler.db.base import engine
-from AndroidCrawler.AndroidCrawler.db.base import DisCrawlerTasks
-from AndroidCrawler.AndroidCrawler.conf.config import Market_CONFIG
+from AndroidCrawler.conf.config import Market_CONFIG
+from AndroidCrawler.db.sqlutil import ISqlHelper
+
+Base = declarative_base()
 
 
 class Market_Hiapk(Base):
     """class for mysql db table: Market_Hiapk"""
+
     __tablename__ = Market_CONFIG.get('Market_Hiapk').get('db_name', 'Market_Hiapk')
     Distributed_id = Column('Distributed_id', BIGINT, nullable=False, autoincrement=True, primary_key=True)
     package_name = Column('package_name', VARCHAR(256), nullable=True, index=True, default=None)
@@ -33,13 +33,12 @@ class Market_Hiapk(Base):
                    download_url=item['download_url'])
 
 
-class SqlHelper(object):
+class SqlHelper(ISqlHelper):
+    """sql helper for Market_Hiapk"""
 
-    def __init__(self):
+    def __init__(self, engine):
         self.table_name = Market_CONFIG.get('Market_Hiapk').get('db_name', 'Market_Hiapk')
-        self.engine = engine
-        Session = sessionmaker(bind=self.engine)
-        self.session = Session()
+        super(SqlHelper, self).__init__(engine)
 
     def init_db(self):
         pass
@@ -60,13 +59,3 @@ class SqlHelper(object):
             filter(Market_Hiapk.version_code == row.version_code). \
             order_by(Market_Hiapk.Distributed_id.desc())
         return query.first()
-
-    def add(self, row):
-        self.session.add(row)
-        self.session.commit()
-
-    def add_to_dis_crawler_tasks(self, row):
-        dis_row = DisCrawlerTasks(submitter=self.table_name, url=row.download_url,
-                                  id=row.Distributed_id, create_time=datetime.datetime.utcnow())
-        self.session.add(dis_row)
-        self.session.commit()
