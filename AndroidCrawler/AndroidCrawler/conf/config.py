@@ -12,8 +12,18 @@ LOG_CONFIG = {
 
 DB_CONFIG = {
     'DB_CONNECT_TYPE': 'sqlalchemy',
-    'DB_CONNECT_STRING': 'mysql+mysqldb://root:root@localhost/proxy?charset=utf8'
+    'DB_CONNECT_STRING': 'mysql+mysqldb://root:@10.64.202.37/UniCrawler?charset=utf8'
 }
+
+Market_CONFIG = {
+    'Market_Hiapk': {
+        'db_name': 'Market_Hiapk',
+    },
+    'Market_360': {
+        'db_name': 'Market_360',
+    }
+}
+
 
 
 
