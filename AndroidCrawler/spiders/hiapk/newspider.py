@@ -11,7 +11,6 @@ from six.moves.urllib.parse import urljoin
 from w3lib.url import safe_url_string
 
 from AndroidCrawler.conf import config
-from AndroidCrawler.db.hiapk import SqlHelper
 
 
 reload(sys)
@@ -31,7 +30,6 @@ class NewSpider(scrapy.Spider):
                  'games', 'games/OnlineGames', 'games/Casual', 'games/RolePlaying', 'games/BrainAndPuzzle',
                  'games/Shooting', 'games/Sports', 'games/Children', 'games/Chess', 'games/Strategy',
                  'games/Simulation', 'games/Racing'}
-    sqlhelper = SqlHelper()
 
     def __init__(self, *args, **kwargs):
         super(NewSpider, self).__init__(*args, **kwargs)
