@@ -6,6 +6,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 from AndroidCrawler.conf import config
 from AndroidCrawler.db.sqlutil import ISqlHelper
+from sqlalchemy import distinct
 
 _Base = declarative_base()
 _Market_CONFIG = config.MARKET_CONFIG
@@ -40,7 +41,7 @@ class SqlHiApk(ISqlHelper):
     table_name = _Market_CONFIG.get('Market_Hiapk').get('db_name', 'Market_Hiapk')
 
     def __init__(self):
-        super(SqlHiApk, self).__init__()
+        super(SqlHiApk, self).__init__(self.table_name)
 
     def init_db(self):
         pass
@@ -65,6 +66,14 @@ class SqlHiApk(ISqlHelper):
             filter(TableHiApk.version_code == row.version_code). \
             order_by(TableHiApk.distributed_id.desc())
         return query.first()
+
+    def query_pkgs(self, offset=0, limit=0):
+        if not limit or limit <= 0:
+            query = self.session.query(distinct(TableHiApk.package_name))
+        else:
+            query = self.session.query(distinct(TableHiApk.package_name)).limit(limit).offset(offset)
+        pkgs = query.all()
+        return [pkg[0] for pkg in pkgs if pkg and pkg[0]]
 
     def item_to_row(self, item):
         return TableHiApk.transform(item)

@@ -1,7 +1,7 @@
 # coding: utf-8
 
 import datetime
-from sqlalchemy import Column, VARCHAR, TEXT, INTEGER, BINARY, TIMESTAMP, SMALLINT, BIGINT
+from sqlalchemy import Column, VARCHAR, TEXT, INTEGER, BINARY, TIMESTAMP, SMALLINT, BIGINT, FLOAT
 from sqlalchemy.ext.declarative import declarative_base
 
 __Base = declarative_base()
@@ -30,4 +30,22 @@ class DisCrawlerTasks(__Base):
     download_count = Column('download_count', INTEGER, nullable=False, default=0, index=True)
     upload_flag = Column('upload_flag', INTEGER, nullable=True, default=0)
     sha256 = Column('Sha256', BINARY(32), nullable=True, default=None, index=True)
+
+class IPProxyPool(__Base):
+    """class for mysql db table IPProxyPool """
+    __tablename__ = 'IPProxyPool'
+    id = Column('id', BIGINT, nullable=False, autoincrement=True, primary_key=True)
+    ip = Column('ip', VARCHAR(25), nullable=False)
+    port = Column('port', INTEGER, nullable=False)
+    validator = Column('validator', VARCHAR(64), nullable=True)
+    country = Column('country', TEXT, nullable=True, default=None)
+    anonymity = Column('anonymity', SMALLINT, nullable=True, default=None)
+    https = Column('https', VARCHAR(4), nullable=True, default=None)
+    speed = Column('speed', FLOAT, nullable=True, default=None)
+    source = Column('source', VARCHAR(20), nullable=True, default=None)
+    save_time = Column('save_time', TIMESTAMP, nullable=False,
+                       default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    vali_count = Column('vali_count', INTEGER, nullable=True, default=3)
+
+
 

@@ -12,14 +12,11 @@ class BaseItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
 
-    spider_name = scrapy.Field()
-
     download_url = scrapy.Field()
     package_name = scrapy.Field()
     version_code = scrapy.Field()
-
     pass
 
 
-class HiapkItem(BaseItem):
+class HiApkItem(BaseItem):
     pass

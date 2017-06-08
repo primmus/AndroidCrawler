@@ -6,18 +6,26 @@ from sqlalchemy.orm import sessionmaker
 
 from AndroidCrawler.conf.config import DB_CONFIG
 from AndroidCrawler.db.base import DisCrawlerTasks
+from AndroidCrawler.db.base import IPProxyPool
+# from AndroidCrawler.db.hiapk import SqlHiApk
 
 
 class ISqlHelper(object):
     """interface for sql helper"""
-
     table_name = None
+    # market = None
 
     def __init__(self, table_name=None):
         if table_name is not None:
             self.table_name = table_name
         elif not getattr(self, 'table_name', None):
-            raise ValueError("%s must have a name" % type(self).__name__)
+            raise ValueError("%s must have a table name" % type(self).__name__)
+
+        # if market is not None:
+        #     self.market = market
+        # elif not getattr(self, 'market', None):
+        #     raise ValueError("%s must have a market name" % type(self).__name__)
+
         engine = create_engine(DB_CONFIG['DB_CONNECT_STRING'], echo=True)
         session_cls = sessionmaker(bind=engine)
         self.session = session_cls()
@@ -32,6 +40,14 @@ class ISqlHelper(object):
         raise NotImplemented
 
     def query_distributed_id(self, row):
+        raise NotImplemented
+
+    def query_proxy_by_validator(self, validator):
+        query = self.session.query(IPProxyPool).filter(IPProxyPool.validator == validator).\
+            filter(IPProxyPool.vali_count > 0)
+        return [(proxy.ip, proxy.port) for proxy in query.all() if proxy is not None]
+
+    def query_pkgs(self, offset=0, limit=0):
         raise NotImplemented
 
     def add(self, row):
@@ -49,13 +65,18 @@ class ISqlHelper(object):
 
 # class SqlUtil(object):
 #
-#     def __init__(self):
-#         engine = create_engine(DB_CONFIG['DB_CONNECT_STRING'], echo=True)
-#         sql_helper = {}
-#         for market_key, info in DB_CONFIG.items():
-#             table_name = info.get('table_name'),
-#             sql_helper_cls = info.get('sql_helper')
-#             sql_helper = sql_helper_cls()
+#     engine = None
+#     session = None
+#     sql_helper = {}
 #
-#         pass
+#     def __init__(self):
+#         self.engine = create_engine(DB_CONFIG['DB_CONNECT_STRING'], echo=True)
+#         session_cls = sessionmaker(bind=self.engine)
+#         self.session = session_cls()
+#         self.sql_helper[SqlHiApk.market] = SqlHiApk(self.engine, self.session)
+#
+#     def get_sql_helper(self, market):
+#         return self.sql_helper.get(market, None)
+
+
 

@@ -14,6 +14,7 @@ def main():
         process = CrawlerProcess(get_project_settings())
         process.crawl(hiapk.CategorySpider)
         process.crawl(hiapk.NewSpider)
+        process.crawl(hiapk.UpdateSpider)
         process.start()
     except Exception:
         pass

@@ -20,13 +20,8 @@ DB_CONFIG = {
 }
 MARKET_CONFIG = {
     'Market_Hiapk': {
-        'enabled': True,
         'table_name': 'Market_Hiapk',
-        # 'sql_helper': SqlHiApk,
-        # 'spiders': {
-        #     HiApkNewSpider,
-        #     HiApkCategorySpider
-        # }
+        'validator': 'hiapk'
     },
     'Market_360': {
         'enabled': False,
