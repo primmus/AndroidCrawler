@@ -20,3 +20,9 @@ class BaseItem(scrapy.Item):
 
 class HiApkItem(BaseItem):
     pass
+
+
+class A360Item(BaseItem):
+    product_id = scrapy.Field()
+    app_md5 = scrapy.Field()
+    pass

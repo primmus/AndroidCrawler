@@ -15,7 +15,11 @@ class CommonPipeline(object):
         sql_helper = getattr(spider, 'sql_helper', None)
         if not sql_helper:
             raise DropItem('sql helper has been is None: {item}'.format(item=item))
-        row = sql_helper.item_to_row(item)
+        try:
+            row = sql_helper.item_to_row(item)
+        except:
+            spider.logger.info('transform item to row failed: {item}'.format(item=item))
+            raise DropItem('transform item to row failed: {item}'.format(item=item))
         if row:
             download_flag, collect_time, distributed_id = sql_helper.query_download_status(row)
             if download_flag == 1:

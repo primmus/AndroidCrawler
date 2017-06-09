@@ -22,11 +22,11 @@ sys.setdefaultencoding('utf8')
 class UpdateSpider(scrapy.Spider):
     """hiapk update spider, crawl update apks"""
 
-    name = 'hiapk.updatespider'
+    name = 'Market_Hiapk.updatespider'
     allowed_domains = ['hiapk.com']
     sql_helper = SqlHiApk()
 
-    validator = config.MARKET_CONFIG.get('Market_Hiapk').get('validator', 'hiapk')
+    validator = config.MARKET_CONFIG.get('Market_Hiapk').get('validator', 'Market_Hiapk')
     proxy_pool = []
     proxy_pool_update_time = time.time()
     pkg_pool = []
@@ -87,9 +87,8 @@ class UpdateSpider(scrapy.Spider):
                 pass
 
         if self.pkg_pool:
-            for i in range(0, 10):
-                if self.pkg_pool:
-                    url = 'http://apk.hiapk.com/appdown/{0}'.format(self.pkg_pool.pop())
-                    yield scrapy.Request(url=url, callback=self.parse_item, method='HEAD', dont_filter=True,
-                                         meta={'dont_redirect': True, 'dont_obey_robotstxt': True,
-                                               'handle_httpstatus_list': (301, 302, 303, 307)})
+            url = 'http://apk.hiapk.com/appdown/{0}'.format(self.pkg_pool.pop())
+            yield scrapy.Request(url=url, callback=self.parse_item, method='HEAD', dont_filter=True,
+                                 meta={'dont_redirect': True, 'dont_obey_robotstxt': True,
+                                       'handle_httpstatus_list': (301, 302, 303, 307)})
+

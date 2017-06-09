@@ -22,11 +22,11 @@ sys.setdefaultencoding('utf8')
 class TopMissingSpider(scrapy.Spider):
     """top missing spider, crawl top missing apks"""
 
-    name = 'hiapk.topmissingspider'
+    name = 'Market_Hiapk.topmissingspider'
     allowed_domains = ['hiapk.com']
     sql_helper = SqlHiApk()
 
-    validator = config.MARKET_CONFIG.get('Market_Hiapk').get('validator', 'hiapk')
+    validator = config.MARKET_CONFIG.get('Market_Hiapk').get('validator', 'Market_Hiapk')
     proxy_pool = []
     proxy_pool_update_time = time.time()
     pkg_pool = []

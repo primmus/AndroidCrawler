@@ -15,7 +15,7 @@ _Market_CONFIG = config.MARKET_CONFIG
 class TableHiApk(_Base):
     """class for mysql db table: Market_Hiapk"""
 
-    __tablename__ = _Market_CONFIG.get('Market_Hiapk').get('db_name', 'Market_Hiapk')
+    __tablename__ = _Market_CONFIG.get('Market_Hiapk').get('table_name', 'Market_Hiapk')
     distributed_id = Column('Distributed_id', BIGINT, nullable=False, autoincrement=True, primary_key=True)
     package_name = Column('package_name', VARCHAR(256), nullable=True, index=True, default=None)
     version_code = Column('version_code', VARCHAR(64), nullable=True, index=True, default=None)
@@ -38,7 +38,7 @@ class TableHiApk(_Base):
 class SqlHiApk(ISqlHelper):
     """sql helper for Market_Hiapk"""
 
-    table_name = _Market_CONFIG.get('Market_Hiapk').get('db_name', 'Market_Hiapk')
+    table_name = _Market_CONFIG.get('Market_Hiapk').get('table_name', 'Market_Hiapk')
 
     def __init__(self):
         super(SqlHiApk, self).__init__(self.table_name)
@@ -69,9 +69,10 @@ class SqlHiApk(ISqlHelper):
 
     def query_pkgs(self, offset=0, limit=0):
         if not limit or limit <= 0:
-            query = self.session.query(distinct(TableHiApk.package_name))
+            query = self.session.query(distinct(TableHiApk.package_name)).filter(TableHiApk.package_name.isnot(None))
         else:
-            query = self.session.query(distinct(TableHiApk.package_name)).limit(limit).offset(offset)
+            query = self.session.query(distinct(TableHiApk.package_name)).\
+                filter(TableHiApk.package_name.isnot(None)).limit(limit).offset(offset)
         pkgs = query.all()
         return [pkg[0] for pkg in pkgs if pkg and pkg[0]]
 

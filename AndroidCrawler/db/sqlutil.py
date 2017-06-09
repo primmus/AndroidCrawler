@@ -7,7 +7,6 @@ from sqlalchemy.orm import sessionmaker
 from AndroidCrawler.conf.config import DB_CONFIG
 from AndroidCrawler.db.base import DisCrawlerTasks
 from AndroidCrawler.db.base import IPProxyPool
-# from AndroidCrawler.db.hiapk import SqlHiApk
 
 
 class ISqlHelper(object):
@@ -26,7 +25,7 @@ class ISqlHelper(object):
         # elif not getattr(self, 'market', None):
         #     raise ValueError("%s must have a market name" % type(self).__name__)
 
-        engine = create_engine(DB_CONFIG['DB_CONNECT_STRING'], echo=True)
+        engine = create_engine(DB_CONFIG['DB_CONNECT_STRING'], echo=False)
         session_cls = sessionmaker(bind=engine)
         self.session = session_cls()
 

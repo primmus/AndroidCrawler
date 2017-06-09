@@ -18,16 +18,16 @@ DB_CONFIG = {
     'DB_CONNECT_TYPE': 'sqlalchemy',
     'DB_CONNECT_STRING': 'mysql+mysqldb://admin:mac8.6@10.64.202.37/UniCrawler?charset=utf8'
 }
+
+
 MARKET_CONFIG = {
     'Market_Hiapk': {
         'table_name': 'Market_Hiapk',
-        'validator': 'hiapk'
+        'validator': 'Market_Hiapk'
     },
     'Market_360': {
-        'enabled': False,
         'table_name': 'Market_360',
-        # 'sql_helper': None,
-        # 'spiders': None
+        'validator': 'Market_360'
     }
 }
 

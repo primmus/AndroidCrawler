@@ -22,7 +22,7 @@ sys.setdefaultencoding('utf8')
 class NewSpider(scrapy.Spider):
     """hiapk new spider, crawl new apks"""
 
-    name = 'hiapk.newspider'
+    name = 'Market_Hiapk.newspider'
     allowed_domains = ['hiapk.com']
     sql_helper = SqlHiApk()
     categorys = {'apps', 'apps/MediaAndVideo', 'apps/DailyLife', 'apps/Social', 'apps/Finance',
@@ -33,7 +33,7 @@ class NewSpider(scrapy.Spider):
                  'games', 'games/OnlineGames', 'games/Casual', 'games/RolePlaying', 'games/BrainAndPuzzle',
                  'games/Shooting', 'games/Sports', 'games/Children', 'games/Chess', 'games/Strategy',
                  'games/Simulation', 'games/Racing'}
-    validator = config.MARKET_CONFIG.get('Market_Hiapk').get('validator', 'hiapk')
+    validator = config.MARKET_CONFIG.get('Market_Hiapk').get('validator', 'Market_Hiapk')
     proxy_pool = []
     proxy_pool_update_time = time.time()
 
