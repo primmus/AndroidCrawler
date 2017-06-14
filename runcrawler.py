@@ -1,7 +1,6 @@
 # coding: utf-8
 
 import logging
-import sys
 import time
 import subprocess
 from logging.handlers import RotatingFileHandler
@@ -12,9 +11,6 @@ from AndroidCrawler.spiders import hiapk
 
 
 def main():
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
-
     logger = logging.getLogger('runcrawler')
     log_config = config.LOG_CONFIG
     log_file = 'log/runcrawler.log'
@@ -25,9 +21,9 @@ def main():
     logger.addHandler(log_hander)
 
     spiders = [
-        a360.CategorySpider,
-        a360.NewSpider,
-        a360.UpdateSpider,
+        # a360.CategorySpider,
+        # a360.NewSpider,
+        # a360.UpdateSpider,
         hiapk.CategorySpider,
         hiapk.UpdateSpider,
         hiapk.NewSpider,

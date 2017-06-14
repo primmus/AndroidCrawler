@@ -49,10 +49,10 @@ class BaseNewSpider(scrapy.Spider):
             return self.proxy_pool
 
     def _init_start_urls(self):
-        NotImplemented
+        raise NotImplemented
 
     def parse(self, response):
-        NotImplemented
+        raise NotImplemented
 
     def start_requests(self):
         for url in self.start_urls:

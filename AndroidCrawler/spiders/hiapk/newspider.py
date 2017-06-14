@@ -2,21 +2,16 @@
 
 import os
 import logging
-import sys
 import time
 from logging.handlers import RotatingFileHandler
 
 import scrapy
 from AndroidCrawler.items import HiApkItem
-# from six.moves.urllib.parse import urljoin
+
 from w3lib.url import safe_url_string
 
 from AndroidCrawler.conf import config
 from AndroidCrawler.db.hiapk import SqlHiApk
-
-
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 
 class NewSpider(scrapy.Spider):
@@ -39,21 +34,25 @@ class NewSpider(scrapy.Spider):
 
     def __init__(self, *args, **kwargs):
         super(NewSpider, self).__init__(*args, **kwargs)
-        self.start_urls = ['http://apk.hiapk.com/{0}?sort=9&pi=1'.format(category) for category in self.categorys]
+        for category in self.categorys:
+            for sort in ['9']:
+                for page in range(1, 51):
+                    url = 'http://apk.hiapk.com/{0}?sort={1}&pi={2}'.format(category, sort, page)
+                    self.start_urls.append(url)
         logger = logging.getLogger(self.name)
         self.__init_logger(logger)
         # self.get_proxy_pool()
 
     def __init_logger(self, logger):
-        LOG_CONFIG = config.LOG_CONFIG
-        log_dir = LOG_CONFIG.get('LOG_DIR', 'log/') + 'hiapk/'
+        log_config = config.LOG_CONFIG
+        log_dir = log_config.get('LOG_DIR', 'log/') + 'hiapk/'
         log_file = log_dir + self.name + '.log'
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
-        log_hander = RotatingFileHandler(log_file, maxBytes=LOG_CONFIG.get('LOG_FILE_SIZE', 10*1024*1024),
-                                         backupCount=LOG_CONFIG.get('LOG_FILE_BACKUP_COUNT', 3))
-        log_hander.setLevel(LOG_CONFIG.get('LOG_LEVER', logging.DEBUG))
-        log_hander.setFormatter(LOG_CONFIG.get('LOG_FORMAT'))
+        log_hander = RotatingFileHandler(log_file, maxBytes=log_config.get('LOG_FILE_SIZE', 10*1024*1024),
+                                         backupCount=log_config.get('LOG_FILE_BACKUP_COUNT', 3))
+        log_hander.setLevel(log_config.get('LOG_LEVER', logging.DEBUG))
+        log_hander.setFormatter(log_config.get('LOG_FORMAT'))
         logger.addHandler(log_hander)
 
     @property
@@ -82,11 +81,11 @@ class NewSpider(scrapy.Spider):
                                       meta={'dont_redirect': True, 'dont_obey_robotstxt': True,
                                             'handle_httpstatus_list': (301, 302, 303, 307)})
 
-        follows = response.xpath('//div[@class="page"]/a[re:match(@href, "\?sort=9")]/@href').extract()
-        if follows is not None:
-            for follow in set(follows):
-                follow = follow if 'http' in follow else 'http://apk.hiapk.com' + follow
-                yield scrapy.Request(follow, callback=self.parse)
+        # follows = response.xpath('//div[@class="page"]/a[re:match(@href, "\?sort=9")]/@href').extract()
+        # if follows is not None:
+        #     for follow in set(follows):
+        #         follow = follow if 'http' in follow else 'http://apk.hiapk.com' + follow
+        #         yield scrapy.Request(follow, callback=self.parse)
 
     def parse_item(self, response):
         self.logger.info('current parse_item url: {0}'.format(response.url))

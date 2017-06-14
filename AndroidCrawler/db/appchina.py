@@ -47,7 +47,8 @@ class SqlAppChina(ISqlHelper):
 
     def query_pkgs(self, offset=0, limit=0):
         if not limit or limit <= 0:
-            query = self.session.query(distinct(TableAppChina.package_name)).filter(TableAppChina.package_name.isnot(None))
+            query = self.session.query(distinct(TableAppChina.package_name)).\
+                filter(TableAppChina.package_name.isnot(None))
         else:
             query = self.session.query(distinct(TableAppChina.package_name)).\
                 filter(TableAppChina.package_name.isnot(None)).limit(limit).offset(offset)

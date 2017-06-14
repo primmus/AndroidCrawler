@@ -2,19 +2,20 @@
 
 import os
 import logging
-import sys
 import time
+import scrapy
 from logging.handlers import RotatingFileHandler
 
-import scrapy
-import urlparse
+try:
+    # for python2
+    import urlparse
+except:
+    # for python3
+    import urllib.parse as urlparse
 
 from AndroidCrawler.conf import config
 from AndroidCrawler.db.a360 import Sql360
 from AndroidCrawler.items import A360Item
-
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 
 class CategorySpider(scrapy.Spider):
@@ -91,8 +92,3 @@ class CategorySpider(scrapy.Spider):
                 yield item
             except:
                 self.logger.warning('parse download url failed: {0}'.format(href))
-
-
-
-
-

@@ -2,19 +2,20 @@
 
 import os
 import logging
-import sys
+import scrapy
 import time
 from logging.handlers import RotatingFileHandler
 
-import scrapy
-import urlparse
+try:
+    # for python2
+    import urlparse
+except:
+    # for python3
+    import urllib.parse as urlparse
 
 from AndroidCrawler.conf import config
 from AndroidCrawler.db.a360 import Sql360
 from AndroidCrawler.items import A360Item
-
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 
 class NewSpider(scrapy.Spider):

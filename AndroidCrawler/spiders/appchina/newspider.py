@@ -34,8 +34,9 @@ class NewSpider(BaseNewSpider):
         referers = response.xpath('//a[re:match(@href, "/app/.*")]/@href').extract()
         if referers is not None:
             for referer in set(referers):
-                referer = referer if 'http' in referer else 'http://www.appchina.com' + referer
-                yield scrapy.Request(url=referer, callback=self.parse_item, dont_filter=True, priority=1)
+                yield response.follow(url=referer, callback=self.parse_item, dont_filter=True, proority=1)
+                # referer = referer if 'http' in referer else 'http://www.appchina.com' + referer
+                # yield scrapy.Request(url=referer, callback=self.parse_item, dont_filter=True, priority=1)
 
     def parse_item(self, response):
         self.logger.info('current parse item url: {0}'.format(response.url))

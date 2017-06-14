@@ -2,19 +2,20 @@
 
 import os
 import logging
-import sys
+import scrapy
 import time
 from logging.handlers import RotatingFileHandler
 
-import scrapy
-import urlparse
+try:
+    # for python2
+    import urlparse
+except:
+    # for python3
+    import urllib.parse as urlparse
 
 from AndroidCrawler.conf import config
 from AndroidCrawler.db.a360 import Sql360
 from AndroidCrawler.items import A360Item
-
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 
 class UpdateSpider(scrapy.Spider):
@@ -26,20 +27,11 @@ class UpdateSpider(scrapy.Spider):
     proxy_pool = []
     proxy_pool_update_time = time.time()
     sql_helper = Sql360()
-    pkg_pool = []
 
     def __init__(self, *args, **kwargs):
         super(UpdateSpider, self).__init__(*args, **kwargs)
         logger = logging.getLogger(self.name)
         self.__init_logger(logger)
-        self.pkg_pool = self.sql_helper.query_pkgs(offset=0, limit=5000)
-        self.offset = 1
-        self.no_pkg_count = 0
-
-        for i in range(0, 5000):
-            if self.pkg_pool:
-                product_id = self.pkg_pool.pop()
-                self.start_urls.append('http://zhushou.360.cn/detail/index/soft_id/{0}'.format(product_id))
 
     def __init_logger(self, logger):
         log_config = config.LOG_CONFIG
@@ -64,8 +56,15 @@ class UpdateSpider(scrapy.Spider):
             return self.proxy_pool
 
     def start_requests(self):
-        for url in self.start_urls:
-            yield scrapy.Request(url=url, callback=self.parse, dont_filter=True)
+        invalid_count, offset, limit = 0, 0, 5000
+        while invalid_count < 3:
+            pkg_pool = self.sql_helper.query_pkgs(offset=offset, limit=limit)
+            offset += 1
+            invalid_count = 0 if pkg_pool else invalid_count+1
+            if pkg_pool:
+                for pkg in pkg_pool:
+                    url = 'http://zhushou.360.cn/detail/index/soft_id/{0}'.format(pkg)
+                    yield scrapy.Request(url=url, callback=self.parse, dont_filter=True)
 
     def parse(self, response):
         self.logger.info('current parse url: {0}'.format(response.url))
@@ -93,17 +92,3 @@ class UpdateSpider(scrapy.Spider):
             except:
                 self.logger.warning('parse download url failed: {0}'.format(href))
 
-        follow = self._get_follow_url()
-        if follow:
-            yield scrapy.Request(url=follow, callback=self.parse, dont_filter=True)
-
-    def _get_follow_url(self):
-        if self.no_pkg_count >= 5:
-            return
-        if not self.pkg_pool:
-            self.pkg_pool = self.sql_helper.query_pkgs(offset=self.offset*5000, limit=5000)
-            self.no_pkg_count = 0 if self.pkg_pool else self.no_pkg_count+1
-            self.offset = self.offset + 1 if self.pkg_pool else self.offset
-        if self.pkg_pool:
-            product_id = self.pkg_pool.pop()
-            return 'http://zhushou.360.cn/detail/index/soft_id/{0}'.format(product_id)

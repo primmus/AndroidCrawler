@@ -2,21 +2,13 @@
 
 import os
 import logging
-import sys
 import time
 from logging.handlers import RotatingFileHandler
 
 import scrapy
-from AndroidCrawler.items import HiApkItem
-# from six.moves.urllib.parse import urljoin
-from w3lib.url import safe_url_string
 
 from AndroidCrawler.conf import config
 from AndroidCrawler.db.hiapk import SqlHiApk
-
-
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 
 class TopMissingSpider(scrapy.Spider):
