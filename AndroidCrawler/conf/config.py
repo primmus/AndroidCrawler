@@ -1,8 +1,6 @@
 # coding: utf-8
 
 import logging
-# from AndroidCrawler.db.hiapk import SqlHiApk
-# from AndroidCrawler.spiders.hiapk import CategorySpider as HiApkCategorySpider, NewSpider as HiApkNewSpider
 
 
 LOG_CONFIG = {
@@ -28,6 +26,14 @@ MARKET_CONFIG = {
     'Market_360': {
         'table_name': 'Market_360',
         'validator': 'Market_360'
+    },
+    'Market_Appchina': {
+        'table_name': 'Market_Appchina',
+        'validator': 'Market_Appchina'
+    },
+    'Market_Mumayi': {
+        'table_name': 'Market_Mumayi',
+        'validator': 'Market_Mumayi'
     }
 }
 

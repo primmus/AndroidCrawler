@@ -22,8 +22,8 @@ def main():
         process.crawl(a360.NewSpider)
         process.crawl(a360.UpdateSpider)
         process.start()
-    except Exception:
-        pass
+    except Exception as e:
+        log.error(e)
 
 
 if __name__ == "__main__":

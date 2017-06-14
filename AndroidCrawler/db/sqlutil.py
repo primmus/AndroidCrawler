@@ -62,20 +62,7 @@ class ISqlHelper(object):
     def item_to_row(self, item):
         raise NotImplemented
 
-# class SqlUtil(object):
-#
-#     engine = None
-#     session = None
-#     sql_helper = {}
-#
-#     def __init__(self):
-#         self.engine = create_engine(DB_CONFIG['DB_CONNECT_STRING'], echo=True)
-#         session_cls = sessionmaker(bind=self.engine)
-#         self.session = session_cls()
-#         self.sql_helper[SqlHiApk.market] = SqlHiApk(self.engine, self.session)
-#
-#     def get_sql_helper(self, market):
-#         return self.sql_helper.get(market, None)
+
 
 
 

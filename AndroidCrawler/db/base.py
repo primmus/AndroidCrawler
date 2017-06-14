@@ -4,10 +4,14 @@ import datetime
 from sqlalchemy import Column, VARCHAR, TEXT, INTEGER, BINARY, TIMESTAMP, SMALLINT, BIGINT, FLOAT
 from sqlalchemy.ext.declarative import declarative_base
 
-__Base = declarative_base()
+from AndroidCrawler.conf import config
 
 
-class DisCrawlerTasks(__Base):
+_Base = declarative_base()
+_Market_CONFIG = config.MARKET_CONFIG
+
+
+class DisCrawlerTasks(_Base):
     """class for mysql db table DisCrawlerTasks """
     __tablename__ = 'DisCrawlerTasks'
     submitter = Column('submitter', VARCHAR(128), nullable=True, default=None, index=True)
@@ -31,7 +35,8 @@ class DisCrawlerTasks(__Base):
     upload_flag = Column('upload_flag', INTEGER, nullable=True, default=0)
     sha256 = Column('Sha256', BINARY(32), nullable=True, default=None, index=True)
 
-class IPProxyPool(__Base):
+
+class IPProxyPool(_Base):
     """class for mysql db table IPProxyPool """
     __tablename__ = 'IPProxyPool'
     id = Column('id', BIGINT, nullable=False, autoincrement=True, primary_key=True)
@@ -48,4 +53,91 @@ class IPProxyPool(__Base):
     vali_count = Column('vali_count', INTEGER, nullable=True, default=3)
 
 
+class Table360(_Base):
+    """class for mysql db table: Market_360"""
 
+    __tablename__ = _Market_CONFIG.get('Market_360').get('table_name', 'Market_360')
+    distributed_id = Column('Distributed_id', BIGINT, nullable=False, autoincrement=True, primary_key=True)
+    package_name = Column('PackageName', VARCHAR(256), nullable=False, index=True, default=None)
+    version_code = Column('VersionCode', VARCHAR(64), nullable=False, index=True, default=None)
+    product_id = Column('ProductID', VARCHAR(32), nullable=True, default=None)
+    download_url = Column('download_url', VARCHAR(2048), nullable=True, default=None)
+    download_flag = Column('download_flag', INTEGER, nullable=True, default=0)
+    collect_time = Column('collect_time', TIMESTAMP, nullable=False,
+                          default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    appsha1 = Column('Appsha1', VARCHAR(45), nullable=True, index=True, default=None)
+    sha256 = Column('Sha256', BINARY(32), nullable=True, index=True, default=None)
+
+    @classmethod
+    def transform(cls, item):
+        return cls(package_name=item.get('package_name'), version_code=item['version_code'],
+                   download_url=item['download_url'], product_id=item.get('product_id', None))
+
+
+class TableHiApk(_Base):
+    """class for mysql db table: Market_Hiapk"""
+
+    __tablename__ = _Market_CONFIG.get('Market_Hiapk').get('table_name', 'Market_Hiapk')
+    distributed_id = Column('Distributed_id', BIGINT, nullable=False, autoincrement=True, primary_key=True)
+    package_name = Column('package_name', VARCHAR(256), nullable=True, index=True, default=None)
+    version_code = Column('version_code', VARCHAR(64), nullable=True, index=True, default=None)
+    file_name = Column('file_name', VARCHAR(200), nullable=True, default=None)
+    data_size = Column('data_size', VARCHAR(64), nullable=True, default=None)
+    download_url = Column('download_url', VARCHAR(2048), nullable=True, default=None)
+    header = Column('header', VARCHAR(2048), nullable=True, default=None)
+    download_flag = Column('download_flag', INTEGER, nullable=True, default=0)
+    collect_time = Column('collect_time', TIMESTAMP, nullable=False,
+                          default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    appsha1 = Column('Appsha1', VARCHAR(45), nullable=True, index=True, default=None)
+    sha256 = Column('Sha256', BINARY(32), nullable=True, index=True, default=None)
+
+    @classmethod
+    def transform(cls, item):
+        return cls(package_name=item['package_name'], version_code=item['version_code'],
+                   download_url=item['download_url'])
+
+
+class TableMuMaYi(_Base):
+    """class for mysql db table: Market_Mumayi"""
+
+    __tablename__ = _Market_CONFIG.get('Market_Mumayi').get('table_name', 'Market_Mumayi')
+    distributed_id = Column('Distributed_id', BIGINT, nullable=False, autoincrement=True, primary_key=True)
+    app_id = Column('ApplicationId', VARCHAR(128), nullable=True, index=True, default=None)
+    package_name = Column('PackageName', VARCHAR(256), nullable=False, index=True, default=None)
+    version_code = Column('ApplicationVersionCode', VARCHAR(64), nullable=False, index=True, default=None)
+    app_name = Column('ApplicationName', VARCHAR(64), nullable=True, default=None)
+    download_url = Column('download_url', VARCHAR(1024), nullable=True, default=None)
+    download_flag = Column('download_flag', INTEGER, nullable=True, default=0)
+    collect_time = Column('collect_time', TIMESTAMP, nullable=False,
+                          default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    appsha1 = Column('Appsha1', VARCHAR(45), nullable=True, index=True, default=None)
+    sha256 = Column('Sha256', BINARY(32), nullable=True, index=True, default=None)
+
+    @classmethod
+    def transform(cls, item):
+        return cls(package_name=item['package_name'], version_code=item['version_code'],
+                   download_url=item['download_url'], app_id=item.get('app_id', None),
+                   app_name=item.get('app_name', None))
+
+
+class TableAppChina(_Base):
+    """class for mysql db table: Market_Appchina"""
+
+    __tablename__ = _Market_CONFIG.get('Market_Appchina').get('table_name', 'Market_Appchina')
+    distributed_id = Column('Distributed_id', BIGINT, nullable=False, autoincrement=True, primary_key=True)
+    package_name = Column('package_name', VARCHAR(256), nullable=True, index=True, default=None)
+    version_code = Column('version_code', INTEGER, nullable=True, index=True, default=None)
+    product_id = Column('product_id', VARCHAR(256), nullable=True, default=None)
+    data_size = Column('size', BIGINT, nullable=True, default=None)
+    category = Column('category', TEXT, nullable=True, default=None)
+    download_url = Column('download_url', VARCHAR(1024), nullable=True, default=None)
+    download_flag = Column('download_flag', INTEGER, nullable=True, default=0)
+    collect_time = Column('collect_time', TIMESTAMP, nullable=False,
+                          default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    appsha1 = Column('Appsha1', VARCHAR(45), nullable=True, index=True, default=None)
+    sha256 = Column('Sha256', BINARY(32), nullable=True, index=True, default=None)
+
+    @classmethod
+    def transform(cls, item):
+        return cls(package_name=item['package_name'], version_code=item['version_code'],
+                   download_url=item['download_url'], product_id=item['product_id'])

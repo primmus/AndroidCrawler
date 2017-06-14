@@ -17,13 +17,16 @@ class ProxyMiddleware(object):
             return
         if 'proxy' in request.meta:
             return
+        sql_helper = getattr(spider, 'sql_helper', None)
+        validator = getattr(spider, 'validator', None)
+        if not sql_helper or not validator:
+            return
 
         proxy_pool_update_time = getattr(spider, 'proxy_pool_update_time', None)
         proxy_pool = getattr(spider, 'proxy_pool')
 
-        if not proxy_pool or (time.time() - proxy_pool_update_time) > 60*10:
-            sql_helper = getattr(spider, 'sql_helper', None)
-            validator = getattr(spider, 'validator', 'httpbin')
+        if not proxy_pool or not proxy_pool_update_time \
+                or (time.time() - proxy_pool_update_time) > 60*10:
             proxy_pool = sql_helper.query_proxy_by_validator(validator)
             if proxy_pool:
                 setattr(spider, 'proxy_pool', proxy_pool)

@@ -9,9 +9,6 @@ import scrapy
 
 
 class BaseItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-
     download_url = scrapy.Field()
     package_name = scrapy.Field()
     version_code = scrapy.Field()
@@ -26,3 +23,15 @@ class A360Item(BaseItem):
     product_id = scrapy.Field()
     app_md5 = scrapy.Field()
     pass
+
+
+class MuMaYiItem(BaseItem):
+    app_id = scrapy.Field()
+    app_name = scrapy.Field()
+    pass
+
+
+class AppChinaItem(BaseItem):
+    product_id = scrapy.Field()
+    pass
+
