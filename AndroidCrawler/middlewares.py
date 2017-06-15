@@ -31,7 +31,7 @@ class ProxyMiddleware(object):
             proxy_pool = sql_helper.query_proxy_by_validator(validator)
             if proxy_pool:
                 setattr(spider, 'proxy_pool', proxy_pool)
-                setattr(spider, 'proxy_pool_update_time', time.time())
+            setattr(spider, 'proxy_pool_update_time', time.time())
             spider.logger.info('update proxy pool: {0} proxy in pool.'.format(len(proxy_pool)))
 
         if proxy_pool:

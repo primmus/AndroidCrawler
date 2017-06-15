@@ -27,10 +27,9 @@ class UpdateSpider(BaseUpdateSpider):
         self._init_start_urls()
 
     def start_requests(self):
-        while True:
-            pkg = self._get_pkg()
+        for pkg in self._get_pkg():
             if not pkg:
-                break
+                continue
             url = 'http://www.appchina.com/app/{0}'.format(pkg)
             yield scrapy.Request(url=url, callback=self.parse, dont_filter=True,
                                  meta={'dont_proxy': self.dont_proxy},

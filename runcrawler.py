@@ -8,6 +8,7 @@ from logging.handlers import RotatingFileHandler
 from AndroidCrawler.conf import config
 from AndroidCrawler.spiders import a360
 from AndroidCrawler.spiders import hiapk
+from AndroidCrawler.spiders import appchina
 
 
 def main():
@@ -27,6 +28,9 @@ def main():
         hiapk.CategorySpider,
         hiapk.UpdateSpider,
         hiapk.NewSpider,
+        appchina.NewSpider,
+        appchina.CategorySpider,
+        appchina.UpdateSpider
     ]
 
     process_list = []

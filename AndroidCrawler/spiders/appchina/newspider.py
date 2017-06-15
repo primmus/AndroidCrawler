@@ -21,7 +21,7 @@ class NewSpider(BaseNewSpider):
     def __init__(self, *args, **kwargs):
         self.name = 'Market_Appchina.newspider'
         self.market = 'Market_Appchina'
-        super(BaseNewSpider, self).__init__(name=self.name, market=self.market, *args, **kwargs)
+        super(NewSpider, self).__init__(name=self.name, market=self.market, *args, **kwargs)
         self.sql_helper = SqlAppChina()
         self._init_start_urls()
 
