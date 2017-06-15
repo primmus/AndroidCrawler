@@ -2,8 +2,11 @@
 
 import os
 import logging
-from logging.handlers import RotatingFileHandler
 import time
+from logging.handlers import RotatingFileHandler
+from scrapy.spidermiddlewares.httperror import HttpError
+from twisted.internet.error import DNSLookupError
+from twisted.internet.error import TimeoutError, TCPTimedOutError
 
 import scrapy
 from AndroidCrawler.items import HiApkItem
@@ -31,6 +34,8 @@ class CategorySpider(scrapy.Spider):
     validator = config.MARKET_CONFIG.get('Market_Hiapk').get('validator', 'Market_Hiapk')
     proxy_pool = []
     proxy_pool_update_time = time.time()
+    download_delay = 10
+    dont_proxy = False
 
     def __init__(self, *args, **kwargs):
         super(CategorySpider, self).__init__(*args, **kwargs)
@@ -66,7 +71,8 @@ class CategorySpider(scrapy.Spider):
 
     def start_requests(self):
         for url in self.start_urls:
-            yield scrapy.Request(url=url, callback=self.parse, dont_filter=True)
+            yield scrapy.Request(url=url, callback=self.parse, dont_filter=True,
+                                 meta={'dont_proxy': True}, errback=self.err_back)
 
     def parse(self, response):
         self.logger.info('current parse url: {0}'.format(response.url))
@@ -76,9 +82,10 @@ class CategorySpider(scrapy.Spider):
             for referer in set(referers):
                 referer = referer if 'http' in referer else 'http://apk.hiapk.com' + referer
                 yield scrapy.Request(url=referer, callback=self.parse_item, method='HEAD',
-                                      dont_filter=True, priority=1,
+                                      dont_filter=True, priority=1, errback=self.err_back,
                                       meta={'dont_redirect': True, 'dont_obey_robotstxt': True,
-                                            'handle_httpstatus_list': (301, 302, 303, 307)})
+                                            'handle_httpstatus_list': (301, 302, 303, 307),
+                                            'dont_proxy': self.dont_proxy})
 
     def parse_item(self, response):
         self.logger.info('current parse_item url: {0}'.format(response.url))
@@ -101,3 +108,22 @@ class CategorySpider(scrapy.Spider):
             return item
         except:
             return None
+
+    def err_back(self, failure):
+        # log all failures
+        self.logger.error(repr(failure))
+        # in case you want to do something special for some errors,
+        # you may need the failure's type:
+        if failure.check(HttpError):
+            # these exceptions come from HttpError spider middleware
+            # you can get the non-200 response
+            response = failure.value.response
+            self.logger.error('HttpError on %s', response.url)
+        elif failure.check(DNSLookupError):
+            # this is the original request
+            request = failure.request
+            self.logger.error('DNSLookupError on %s', request.url)
+        elif failure.check(TimeoutError, TCPTimedOutError):
+            request = failure.request
+            self.logger.error('TimeoutError on %s', request.url)
+            self.logger.error('TimeoutError on %s', request.url)

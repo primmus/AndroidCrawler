@@ -33,7 +33,7 @@ class CommonPipeline(object):
                 sql_helper.add(row)
             else:
                 # old item, assign distributed_id
-                row.Distributed_id = distributed_id
+                row.distributed_id = distributed_id
 
             if row.distributed_id is not None:
                 sql_helper.add_to_dis_crawler_tasks(row)

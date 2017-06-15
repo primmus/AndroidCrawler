@@ -63,7 +63,7 @@ DOWNLOADER_MIDDLEWARES = {
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
 EXTENSIONS = {
     # 'scrapy.extensions.telnet.TelnetConsole': None,
-    'scrapy_jsonrpc.webservice.WebService': 500,
+    # 'scrapy_jsonrpc.webservice.WebService': 500,
 }
 
 # Configure item pipelines

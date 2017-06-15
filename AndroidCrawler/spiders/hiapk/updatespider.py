@@ -3,12 +3,14 @@
 import os
 import logging
 import time
-from logging.handlers import RotatingFileHandler
-
 import scrapy
-from AndroidCrawler.items import HiApkItem
 from w3lib.url import safe_url_string
+from logging.handlers import RotatingFileHandler
+from scrapy.spidermiddlewares.httperror import HttpError
+from twisted.internet.error import DNSLookupError
+from twisted.internet.error import TimeoutError, TCPTimedOutError
 
+from AndroidCrawler.items import HiApkItem
 from AndroidCrawler.conf import config
 from AndroidCrawler.db.hiapk import SqlHiApk
 
@@ -23,6 +25,8 @@ class UpdateSpider(scrapy.Spider):
     validator = config.MARKET_CONFIG.get('Market_Hiapk').get('validator', 'Market_Hiapk')
     proxy_pool = []
     proxy_pool_update_time = time.time()
+    download_delay = 5
+    dont_proxy = False
 
     def __init__(self, *args, **kwargs):
         super(UpdateSpider, self).__init__(*args, **kwargs)
@@ -54,14 +58,16 @@ class UpdateSpider(scrapy.Spider):
     def start_requests(self):
         invalid_count, offset, limit = 0, 0, 5000
         while invalid_count < 3:
-            pkg_pool = self.sql_helper.query_pkgs(offset=offset, limit=limit)
+            pkg_pool = self.sql_helper.query_pkgs(offset=offset*limit, limit=limit)
             offset += 1
             invalid_count = 0 if pkg_pool else invalid_count+1
             for pkg in pkg_pool:
                 url = 'http://apk.hiapk.com/appdown/{0}'.format(pkg)
-                yield scrapy.Request(url=url, callback=self.parse, method='HEAD', dont_filter=True,
+                yield scrapy.Request(url=url, callback=self.parse, method='HEAD',
+                                     dont_filter=True, priority=1, errback=self.err_back,
                                      meta={'dont_redirect': True, 'dont_obey_robotstxt': True,
                                            'handle_httpstatus_list': (301, 302, 303, 307),
+                                           'dont_proxy': self.dont_proxy,
                                            'dont_retry': True})
 
     def parse(self, response):
@@ -82,4 +88,21 @@ class UpdateSpider(scrapy.Spider):
             except:
                 pass
 
-
+    def err_back(self, failure):
+        # log all failures
+        self.logger.error(repr(failure))
+        # in case you want to do something special for some errors,
+        # you may need the failure's type:
+        if failure.check(HttpError):
+            # these exceptions come from HttpError spider middleware
+            # you can get the non-200 response
+            response = failure.value.response
+            self.logger.error('HttpError on %s', response.url)
+        elif failure.check(DNSLookupError):
+            # this is the original request
+            request = failure.request
+            self.logger.error('DNSLookupError on %s', request.url)
+        elif failure.check(TimeoutError, TCPTimedOutError):
+            request = failure.request
+            self.logger.error('TimeoutError on %s', request.url)
+            self.logger.error('TimeoutError on %s', request.url)

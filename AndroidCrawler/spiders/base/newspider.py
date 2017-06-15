@@ -5,6 +5,9 @@ import logging
 import time
 import scrapy
 from logging.handlers import RotatingFileHandler
+from scrapy.spidermiddlewares.httperror import HttpError
+from twisted.internet.error import DNSLookupError
+from twisted.internet.error import TimeoutError, TCPTimedOutError
 
 from AndroidCrawler.conf import config
 
@@ -15,6 +18,8 @@ class BaseNewSpider(scrapy.Spider):
     proxy_pool = []
     proxy_pool_update_time = time.time()
     sql_helper = None
+    download_delay = 5
+    dont_proxy = False
 
     def __init__(self, name, market, *args, **kwargs):
         super(BaseNewSpider, self).__init__(name=name, *args, **kwargs)
@@ -22,7 +27,7 @@ class BaseNewSpider(scrapy.Spider):
         self.validator = config.MARKET_CONFIG.get('market').get('validator', None)
         logger = logging.getLogger(self.name)
         self._init_logger(logger)
-        self._init_start_urls()
+        # self._init_start_urls()
 
     def _init_logger(self, logger):
         log_config = config.LOG_CONFIG
@@ -56,4 +61,25 @@ class BaseNewSpider(scrapy.Spider):
 
     def start_requests(self):
         for url in self.start_urls:
-            yield scrapy.Request(url=url, callback=self.parse, dont_filter=True)
+            yield scrapy.Request(url=url, callback=self.parse, dont_filter=True,
+                                 meta={'dont_proxy': self.dont_proxy},
+                                 errback=self.err_back, priority=0)
+
+    def err_back(self, failure):
+        # log all failures
+        self.logger.error(repr(failure))
+        # in case you want to do something special for some errors,
+        # you may need the failure's type:
+        if failure.check(HttpError):
+            # these exceptions come from HttpError spider middleware
+            # you can get the non-200 response
+            response = failure.value.response
+            self.logger.error('HttpError on %s', response.url)
+        elif failure.check(DNSLookupError):
+            # this is the original request
+            request = failure.request
+            self.logger.error('DNSLookupError on %s', request.url)
+        elif failure.check(TimeoutError, TCPTimedOutError):
+            request = failure.request
+            self.logger.error('TimeoutError on %s', request.url)
+            self.logger.error('TimeoutError on %s', request.url)

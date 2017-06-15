@@ -14,7 +14,7 @@ LOG_CONFIG = {
 
 DB_CONFIG = {
     'DB_CONNECT_TYPE': 'sqlalchemy',
-    'DB_CONNECT_STRING': 'mysql+mysqldb://admin:mac8.6@10.64.202.37/UniCrawler?charset=utf8'
+    'DB_CONNECT_STRING': 'mysql+pymysql://admin:mac8.6@10.64.202.37/UniCrawler?charset=utf8'
 }
 
 

@@ -15,6 +15,8 @@ class ProxyMiddleware(object):
             return 
         if not hasattr(spider, 'proxy_pool'):
             return
+        if request.meta.get('dont_proxy', False):
+            return
         if 'proxy' in request.meta:
             return
         sql_helper = getattr(spider, 'sql_helper', None)
@@ -31,6 +33,7 @@ class ProxyMiddleware(object):
             if proxy_pool:
                 setattr(spider, 'proxy_pool', proxy_pool)
                 setattr(spider, 'proxy_pool_update_time', time.time())
+            spider.logger.info('update proxy pool: {0} proxy in pool.'.format(len(proxy_pool)))
 
         if proxy_pool:
             proxy = random.choice(proxy_pool)

@@ -5,6 +5,9 @@ import logging
 import scrapy
 import time
 from logging.handlers import RotatingFileHandler
+from scrapy.spidermiddlewares.httperror import HttpError
+from twisted.internet.error import DNSLookupError
+from twisted.internet.error import TimeoutError, TCPTimedOutError
 
 try:
     # for python2
@@ -27,6 +30,8 @@ class UpdateSpider(scrapy.Spider):
     proxy_pool = []
     proxy_pool_update_time = time.time()
     sql_helper = Sql360()
+    download_delay = 30
+    dont_proxy = True
 
     def __init__(self, *args, **kwargs):
         super(UpdateSpider, self).__init__(*args, **kwargs)
@@ -58,13 +63,14 @@ class UpdateSpider(scrapy.Spider):
     def start_requests(self):
         invalid_count, offset, limit = 0, 0, 5000
         while invalid_count < 3:
-            pkg_pool = self.sql_helper.query_pkgs(offset=offset, limit=limit)
+            pkg_pool = self.sql_helper.query_pkgs(offset=offset*limit, limit=limit)
             offset += 1
             invalid_count = 0 if pkg_pool else invalid_count+1
             if pkg_pool:
                 for pkg in pkg_pool:
                     url = 'http://zhushou.360.cn/detail/index/soft_id/{0}'.format(pkg)
-                    yield scrapy.Request(url=url, callback=self.parse, dont_filter=True)
+                    yield scrapy.Request(url=url, callback=self.parse, dont_filter=True, errback=self.err_back,
+                                         meta={'dont_retry': True, 'dont_proxy': self.dont_proxy})
 
     def parse(self, response):
         self.logger.info('current parse url: {0}'.format(response.url))
@@ -92,3 +98,20 @@ class UpdateSpider(scrapy.Spider):
             except:
                 self.logger.warning('parse download url failed: {0}'.format(href))
 
+    def err_back(self, failure):
+        # log all failures
+        self.logger.error(repr(failure))
+        # in case you want to do something special for some errors,
+        # you may need the failure's type:
+        if failure.check(HttpError):
+            # these exceptions come from HttpError spider middleware
+            # you can get the non-200 response
+            response = failure.value.response
+            self.logger.error('HttpError on %s', response.url)
+        elif failure.check(DNSLookupError):
+            # this is the original request
+            request = failure.request
+            self.logger.error('DNSLookupError on %s', request.url)
+        elif failure.check(TimeoutError, TCPTimedOutError):
+            request = failure.request
+            self.logger.error('TimeoutError on %s', request.url)
