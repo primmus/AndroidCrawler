@@ -24,7 +24,7 @@ class BaseNewSpider(scrapy.Spider):
     def __init__(self, name, market, *args, **kwargs):
         super(BaseNewSpider, self).__init__(name=name, *args, **kwargs)
         self.market = market
-        self.validator = config.MARKET_CONFIG.get('market').get('validator', None)
+        self.validator = config.MARKET_CONFIG.get(market).get('validator', None)
         logger = logging.getLogger(self.name)
         self._init_logger(logger)
         # self._init_start_urls()

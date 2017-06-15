@@ -24,6 +24,8 @@ def main():
         # process.crawl(a360.UpdateSpider)
         # Market_Appchina
         process.crawl(appchina.NewSpider)
+        process.crawl(appchina.CategorySpider)
+        # process.crawl(appchina.UpdateSpider)
         #
         process.start()
     except Exception as e:
