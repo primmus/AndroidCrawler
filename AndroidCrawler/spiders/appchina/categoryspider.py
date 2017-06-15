@@ -15,12 +15,11 @@ from AndroidCrawler.items import AppChinaItem
 
 class CategorySpider(BaseCategorySpider):
     """category spider for Market_Appchina"""
-
+    name = 'Market_Appchina.categoryspider'
+    market = 'Market_Appchina'
     allowed_domains = ['appchina.com']
 
     def __init__(self, *args, **kwargs):
-        self.name = 'Market_Appchina.categoryspider'
-        self.market = 'Market_Appchina'
         super(CategorySpider, self).__init__(name=self.name, market=self.market, *args, **kwargs)
         self.sql_helper = SqlAppChina()
         self._init_start_urls()

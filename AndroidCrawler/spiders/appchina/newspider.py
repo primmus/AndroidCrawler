@@ -15,12 +15,11 @@ from AndroidCrawler.items import AppChinaItem
 
 class NewSpider(BaseNewSpider):
     """new spider for Market_Appchina"""
-
+    name = 'Market_Appchina.newspider'
+    market = 'Market_Appchina'
     allowed_domains = ['appchina.com']
 
     def __init__(self, *args, **kwargs):
-        self.name = 'Market_Appchina.newspider'
-        self.market = 'Market_Appchina'
         super(NewSpider, self).__init__(name=self.name, market=self.market, *args, **kwargs)
         self.sql_helper = SqlAppChina()
         self._init_start_urls()

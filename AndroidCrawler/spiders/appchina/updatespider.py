@@ -15,13 +15,12 @@ from AndroidCrawler.items import AppChinaItem
 
 class UpdateSpider(BaseUpdateSpider):
     """update spider for Market_Appchina"""
-
+    name = 'Market_Appchina.updatespider'
+    market = 'Market_Appchina'
     allowed_domains = ['appchina.com']
     pkg_pool = []
 
     def __init__(self, *args, **kwargs):
-        self.name = 'Market_Appchina.updatespider'
-        self.market = 'Market_Appchina'
         super(UpdateSpider, self).__init__(name=self.name, market=self.market, *args, **kwargs)
         self.sql_helper = SqlAppChina()
         self._init_start_urls()

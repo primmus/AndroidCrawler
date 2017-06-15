@@ -14,6 +14,8 @@ from AndroidCrawler.conf import config
 def run_scrapy(name):
     logger = logging.getLogger('runscrapy')
     log_config = config.LOG_CONFIG
+    if not os.path.exists('log'):
+        os.makedirs('log')
     log_file = 'log/runscrapy.log'
     log_hander = RotatingFileHandler(log_file, maxBytes=log_config.get('LOG_FILE_SIZE', 10 * 1024 * 1024),
                                      backupCount=log_config.get('LOG_FILE_BACKUP_COUNT', 3))
