@@ -62,6 +62,8 @@ class UpdateSpider(scrapy.Spider):
             offset += 1
             invalid_count = 0 if pkg_pool else invalid_count+1
             for pkg in pkg_pool:
+                if not pkg or '.apk' in pkg:
+                    continue
                 url = 'http://apk.hiapk.com/appdown/{0}'.format(pkg)
                 yield scrapy.Request(url=url, callback=self.parse, method='HEAD',
                                      dont_filter=True, priority=1, errback=self.err_back,

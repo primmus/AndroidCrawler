@@ -27,7 +27,7 @@ class UpdateSpider(BaseUpdateSpider):
 
     def start_requests(self):
         for pkg in self._get_pkg():
-            if not pkg:
+            if not pkg or 'html' in pkg or '?' in pkg:
                 continue
             url = 'http://www.appchina.com/app/{0}'.format(pkg)
             yield scrapy.Request(url=url, callback=self.parse, dont_filter=True,
@@ -37,7 +37,7 @@ class UpdateSpider(BaseUpdateSpider):
     def parse(self, response):
         self.logger.info('current parse item url: {0}'.format(response.url))
 
-        package_name = response.url.split('/')[-1] if not response.url.endswith('/') else response.url.split('/')[-2]
+        package_name = urlparse.urlparse(response.url).path.split('/')[-1]
 
         old_versions = response.xpath('//a[re:match(@class, ".*historyVerison-download.*")]/@href').extract()
         for old_version in old_versions:

@@ -47,7 +47,7 @@ class NewSpider(BaseNewSpider):
     def parse_item(self, response):
         self.logger.info('current parse item url: {0}'.format(response.url))
 
-        package_name = response.url.split('/')[-1] if not response.url.endswith('/') else response.url.split('/')[-2]
+        package_name = urlparse.urlparse(response.url).path.split('/')[-1]
 
         old_versions = response.xpath('//a[re:match(@class, ".*historyVerison-download.*")]/@href').extract()
         for old_version in old_versions:

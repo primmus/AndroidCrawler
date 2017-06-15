@@ -68,6 +68,8 @@ class UpdateSpider(scrapy.Spider):
             invalid_count = 0 if pkg_pool else invalid_count+1
             if pkg_pool:
                 for pkg in pkg_pool:
+                    if not pkg or '.apk' in pkg:
+                        continue
                     url = 'http://zhushou.360.cn/detail/index/soft_id/{0}'.format(pkg)
                     yield scrapy.Request(url=url, callback=self.parse, dont_filter=True, errback=self.err_back,
                                          meta={'dont_retry': True, 'dont_proxy': self.dont_proxy})
