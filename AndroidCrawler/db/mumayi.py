@@ -1,6 +1,5 @@
 # coding: utf-8
 
-from sqlalchemy import distinct
 from sqlalchemy.ext.declarative import declarative_base
 
 from AndroidCrawler.conf import config
@@ -45,12 +44,18 @@ class SqlMuMaYi(ISqlHelper):
 
     def query_pkgs(self, offset=0, limit=0):
         if not limit or limit <= 0:
-            query = self.session.query(distinct(TableMuMaYi.app_id)).filter(TableMuMaYi.app_id.isnot(None))
+            query = self.session.query(TableMuMaYi.package_name, TableMuMaYi.app_id)\
+                .filter(TableMuMaYi.package_name.isnot(None))\
+                .filter(TableMuMaYi.app_id.isnot(None))\
+                .group_by(TableMuMaYi.package_name, TableMuMaYi.app_id)
         else:
-            query = self.session.query(distinct(TableMuMaYi.app_id)).filter(TableMuMaYi.app_id.isnot(None))\
+            query = self.session.query(TableMuMaYi.package_name, TableMuMaYi.app_id)\
+                .filter(TableMuMaYi.package_name.isnot(None))\
+                .filter(TableMuMaYi.app_id.isnot(None))\
+                .group_by(TableMuMaYi.package_name, TableMuMaYi.app_id)\
                 .limit(limit).offset(offset)
-        pkgs = query.all()
-        return [pkg[0] for pkg in pkgs if pkg and pkg[0]]
+        for pkg_and_app_id in query.all():
+            yield pkg_and_app_id
 
     def item_to_row(self, item):
         return TableMuMaYi.transform(item)

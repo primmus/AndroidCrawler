@@ -20,7 +20,7 @@ class CategorySpider(BaseCategorySpider):
     allowed_domains = ['appchina.com']
 
     def __init__(self, *args, **kwargs):
-        super(CategorySpider, self).__init__(name=self.name, market=self.market, *args, **kwargs)
+        super(CategorySpider, self).__init__(name=self.name, market=self.market, **kwargs)
         self.sql_helper = SqlAppChina()
         self._init_start_urls()
 

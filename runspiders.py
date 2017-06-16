@@ -6,6 +6,7 @@ from scrapy.utils.project import get_project_settings
 from AndroidCrawler.spiders import hiapk
 from AndroidCrawler.spiders import a360
 from AndroidCrawler.spiders import appchina
+from AndroidCrawler.spiders import mumayi
 
 
 log = logging.getLogger('runspiders')
@@ -23,10 +24,13 @@ def main():
         # process.crawl(a360.NewSpider)
         # process.crawl(a360.UpdateSpider)
         # Market_Appchina
-        process.crawl(appchina.NewSpider)
-        process.crawl(appchina.CategorySpider)
-        process.crawl(appchina.UpdateSpider)
-        #
+        # process.crawl(appchina.NewSpider)
+        # process.crawl(appchina.CategorySpider)
+        # process.crawl(appchina.UpdateSpider)
+        # Market_Mumayi
+        process.crawl(mumayi.NewSpider)
+        # process.crawl(mumayi.CategorySpider)
+        # process.crawl(mumayi.UpdateSpider)
         process.start()
     except Exception as e:
         log.error(e)

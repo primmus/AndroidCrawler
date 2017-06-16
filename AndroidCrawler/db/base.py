@@ -106,7 +106,7 @@ class TableMuMaYi(_Base):
     package_name = Column('PackageName', VARCHAR(256), nullable=False, index=True, default=None)
     version_code = Column('ApplicationVersionCode', VARCHAR(64), nullable=False, index=True, default=None)
     app_name = Column('ApplicationName', VARCHAR(64), nullable=True, default=None)
-    download_url = Column('download_url', VARCHAR(1024), nullable=True, default=None)
+    download_url = Column('download_url', VARCHAR(2048), nullable=True, default=None)
     download_flag = Column('download_flag', INTEGER, nullable=True, default=0)
     collect_time = Column('collect_time', TIMESTAMP, nullable=False,
                           default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)

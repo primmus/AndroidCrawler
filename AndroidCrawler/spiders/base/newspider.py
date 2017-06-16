@@ -21,8 +21,8 @@ class BaseNewSpider(scrapy.Spider):
     download_delay = 5
     dont_proxy = False
 
-    def __init__(self, name, market, *args, **kwargs):
-        super(BaseNewSpider, self).__init__(name=name, *args, **kwargs)
+    def __init__(self, name, market, **kwargs):
+        super(BaseNewSpider, self).__init__(name=name, **kwargs)
         self.market = market
         self.validator = config.MARKET_CONFIG.get(market).get('validator', None)
         logger = logging.getLogger(self.name)
