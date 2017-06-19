@@ -141,3 +141,24 @@ class TableAppChina(_Base):
     def transform(cls, item):
         return cls(package_name=item['package_name'], version_code=item['version_code'],
                    download_url=item['download_url'], product_id=item['product_id'])
+
+
+class TableAnZhi(_Base):
+    """class for mysql db table: Market_Anzhi"""
+
+    __tablename__ = _Market_CONFIG.get('Market_Anzhi').get('table_name', 'Market_Anzhi')
+    distributed_id = Column('Distributed_id', BIGINT, nullable=False, autoincrement=True, primary_key=True)
+    package_name = Column('PackageName', VARCHAR(128), nullable=False, index=True, default=None)
+    version_code = Column('ApplicationVersionCode', VARCHAR(64), nullable=True, index=True, default=None)
+    app_id = Column('ApplicationId', VARCHAR(128), nullable=True, index=True, default=None)
+    download_url = Column('download_url', VARCHAR(1024), nullable=True, default=None)
+    download_flag = Column('download_flag', INTEGER, nullable=True, default=0)
+    collect_time = Column('collect_time', TIMESTAMP, nullable=False,
+                          default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    appsha1 = Column('Appsha1', VARCHAR(45), nullable=True, index=True, default=None)
+    sha256 = Column('Sha256', BINARY(32), nullable=True, index=True, default=None)
+
+    @classmethod
+    def transform(cls, item):
+        return cls(package_name=item['package_name'], version_code=item['version_code'],
+                   download_url=item['download_url'], app_id=item['app_id'])

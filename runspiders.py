@@ -29,8 +29,8 @@ def main():
         # process.crawl(appchina.UpdateSpider)
         # Market_Mumayi
         process.crawl(mumayi.NewSpider)
-        # process.crawl(mumayi.CategorySpider)
-        # process.crawl(mumayi.UpdateSpider)
+        process.crawl(mumayi.CategorySpider)
+        process.crawl(mumayi.UpdateSpider)
         process.start()
     except Exception as e:
         log.error(e)

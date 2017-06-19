@@ -35,3 +35,7 @@ class AppChinaItem(BaseItem):
     product_id = scrapy.Field()
     pass
 
+
+class AnZhiItem(BaseItem):
+    app_id = scrapy.Field()
+    pass

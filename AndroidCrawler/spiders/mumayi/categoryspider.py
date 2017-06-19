@@ -22,7 +22,7 @@ class CategorySpider(BaseCategorySpider):
     market = 'Market_Mumayi'
     allowed_domains = ['mumayi.com']
 
-    download_delay = 15
+    download_delay = 30
     download_host = ('http://apka.mumayi.com', 'http://apkb.mumayi.com', 'http://apkc.mumayi.com')
 
     def __init__(self, **kwargs):
@@ -40,10 +40,11 @@ class CategorySpider(BaseCategorySpider):
             for page in range(1, 10):
                 url = 'http://xmlso.mumayi.com/v18/specialtopics/list.php?type={0}&page={1}'.format(list_type, page)
                 self.start_urls.append(url)
-        # 金蛋专区
+        # # 金蛋专区
         for page in range(1, 600):
             url = 'http://xml.mumayi.com/v19/list.php?listtype=goodgame&page={0}'.format(page)
             self.start_urls.append(url)
+        pass
 
     def start_requests(self):
         for url in self.start_urls:
@@ -68,7 +69,7 @@ class CategorySpider(BaseCategorySpider):
                 item = MuMaYiItem(app_id=app.get('id'), package_name=app.get('packagename'),
                                   version_code=app.get('versioncode'), app_name=app.get('title'),
                                   download_url=app.get('download'))
-                if item.get('download_url') is not None:
+                if item['download_url'] and item['package_name'] and item['version_code']:
                     item['download_url'] = urlparse.urljoin(random.choice(self.download_host), item.get('download_url'))
                     yield item
         except:

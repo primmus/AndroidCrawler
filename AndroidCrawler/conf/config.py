@@ -34,6 +34,10 @@ MARKET_CONFIG = {
     'Market_Mumayi': {
         'table_name': 'Market_Mumayi',
         'validator': 'Market_Mumayi'
+    },
+    'Market_Anzhi': {
+        'table_name': 'Market_Anzhi',
+        'validator': 'Market_Anzhi'
     }
 }
 

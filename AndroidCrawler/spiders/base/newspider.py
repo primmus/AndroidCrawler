@@ -36,7 +36,7 @@ class BaseNewSpider(scrapy.Spider):
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
         log_hander = RotatingFileHandler(log_file, maxBytes=log_config.get('LOG_FILE_SIZE', 10*1024*1024),
-                                         backupCount=log_config.get('LOG_FILE_BACKUP_COUNT', 3))
+                                         backupCount=log_config.get('LOG_FILE_BACKUP_COUNT', 3), encoding='utf-8')
         log_hander.setLevel(log_config.get('LOG_LEVER', logging.DEBUG))
         log_hander.setFormatter(log_config.get('LOG_FORMAT'))
         logger.addHandler(log_hander)

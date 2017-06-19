@@ -61,7 +61,7 @@ class UpdateSpider(BaseUpdateSpider):
                 item = MuMaYiItem(app_id=app.get('id'), package_name=app.get('packagename'),
                                   version_code=app.get('versioncode'), app_name=app.get('title'),
                                   download_url=app.get('download'))
-                if item.get('download_url') is not None:
+                if item['download_url'] and item['package_name'] and item['version_code']:
                     item['download_url'] = urlparse.urljoin(random.choice(self.download_host), item.get('download_url'))
                     yield item
         except:
