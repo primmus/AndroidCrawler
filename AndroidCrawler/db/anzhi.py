@@ -27,8 +27,7 @@ class SqlAnZhi(ISqlHelper):
 
     def query_download_status(self, row):
         query = self.session.query(Table.download_flag, Table.collect_time, Table.distributed_id).\
-            filter(Table.package_name == row.package_name).\
-            filter(Table.version_code == row.version_code).\
+            filter(Table.app_id == row.app_id).\
             order_by(Table.distributed_id.desc())
         download_status = query.first()
         if download_status is None:
@@ -38,8 +37,7 @@ class SqlAnZhi(ISqlHelper):
 
     def query_distributed_id(self, row):
         query = self.session.query(Table.distributed_id). \
-            filter(Table.package_name == row.package_name). \
-            filter(Table.version_code == row.version_code). \
+            filter(Table.app_id == row.app_id). \
             order_by(Table.distributed_id.desc())
         return query.first()
 
@@ -51,6 +49,12 @@ class SqlAnZhi(ISqlHelper):
                 filter(Table.package_name.isnot(None)).limit(limit).offset(offset)
         for pkg in query.all():
             yield pkg
+
+    def query_app_id(self, package_name):
+        query = self.session.query(Table.app_id). \
+            filter(Table.package_name == package_name). \
+            order_by(Table.distributed_id.desc())
+        return query.first()
 
     def item_to_row(self, item):
         return Table.transform(item)
